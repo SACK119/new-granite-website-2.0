@@ -1077,7 +1077,7 @@ footer {
   </div>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 // ─── SCROLL PROGRESS
 const prog = document.getElementById('prog');
 window.addEventListener('scroll', () => {
@@ -1123,4 +1123,17 @@ const io = new IntersectionObserver(entries => {
 revealEls.forEach(el => io.observe(el));
 
 // ─── SMOOTH SCROLL
-document.querySelector
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const href = a.getAttribute('href');
+    const target = document.querySelector(href);
+    if (!target) return;
+    e.preventDefault();
+    closeMenu();
+    const navH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 68;
+    window.scrollTo({ top: target.offsetTop - navH, behavior: 'smooth' });
+  });
+});
+</script>
+</body>
+</html>
