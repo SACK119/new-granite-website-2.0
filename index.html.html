@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prestige Stone & Granite</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --stone:   #2b2620;
+  --cream:   #f7f3ee;
+  --warm:    #e8ddd0;
+  --terra:   #9c6b4a;
+  --sand:    #c8a882;
+  --ink:     #1a1714;
+  --mist:    #ede8e2;
+  --serif:   'Cormorant Garamond', Georgia, serif;
+  --sans:    'DM Sans', sans-serif;
+  --nav-h:   68px;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--ink);
+}
+
+body {
+  font-family: var(--sans);
+  background: var(--cream);
+  color: var(--stone);
+  overflow-x: hidden;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* prevent any stray text nodes above nav */
+body > #prog { display:block; }
+body > canvas { display:none; }
+
+/* ─── SCROLL PROGRESS ─── */
+#prog {
+  position: fixed; top:0; left:0; height:2px;
+  background: var(--terra); z-index:9999;
+  width:0%; transition: width .1s linear;
+  margin:0; padding:0; border:none;
+}
+
+/* ─── NAV ─── */
+nav {
+  position: fixed; top:0; left:0; right:0; height: var(--nav-h);
+  z-index: 1000;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 5vw;
+  transition: background .4s, box-shadow .4s;
+}
+nav.solid {
+  background: var(--ink);
+  box-shadow: 0 1px 20px rgba(0,0,0,.25);
+}
+.nav-logo {
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: .04em;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.nav-logo em { color: var(--sand); font-style: normal; }
+
+.nav-links {
+  display: flex; list-style: none; gap: 2.5rem;
+  align-items: center;
+}
+.nav-links a {
+  color: rgba(255,255,255,.75);
+  text-decoration: none;
+  font-size: .82rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  transition: color .2s;
+}
+.nav-links a:hover { color: var(--sand); }
+
+.nav-cta {
+  background: var(--terra);
+  color: #fff !important;
+  padding: .55rem 1.3rem;
+  letter-spacing: .08em !important;
+  transition: background .2s !important;
+}
+.nav-cta:hover { background: var(--sand) !important; color: var(--ink) !important; }
+
+/* hamburger */
+.burger {
+  display: none;
+  flex-direction: column; gap:5px; cursor:pointer;
+  padding: 4px; background: none; border: none;
+}
+.burger span {
+  display: block; width:24px; height:2px;
+  background: #fff; border-radius:2px;
+  transition: transform .3s, opacity .3s;
+}
+.burger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.burger.open span:nth-child(2) { opacity:0; }
+.burger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* mobile drawer */
+.mobile-menu {
+  display: none;
+  position: fixed; top: var(--nav-h); left:0; right:0; bottom:0;
+  background: var(--ink);
+  z-index: 999;
+  flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 2rem;
+  opacity:0; pointer-events:none;
+  transition: opacity .3s;
+}
+.mobile-menu.open { opacity:1; pointer-events:all; }
+.mobile-menu a {
+  font-family: var(--serif);
+  font-size: 2.2rem;
+  font-weight: 300;
+  color: var(--cream);
+  text-decoration: none;
+  letter-spacing: .05em;
+  transition: color .2s;
+}
+.mobile-menu a:hover { color: var(--sand); }
+.mobile-menu .mob-cta {
+  margin-top:1rem;
+  font-family: var(--sans);
+  font-size: .9rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  background: var(--terra);
+  color: #fff !important;
+  padding: .8rem 2.5rem;
+  font-weight: 500;
+}
+
+/* ─── HERO ─── */
+.hero {
+  height: 100svh; min-height: 600px;
+  position: relative;
+  display: flex; align-items: flex-end;
+  padding: 0 5vw 8vh;
+  overflow: hidden;
+  color: #fff;
+}
+
+.hero-slides { position:absolute; inset:0; }
+.hero-slide {
+  position:absolute; inset:0;
+  background-size:cover; background-position:center;
+  opacity:0; transition: opacity 1.8s ease-in-out;
+}
+.hero-slide.active { opacity:1; }
+.hero-slide::after {
+  content:'';
+  position:absolute; inset:0;
+  background: linear-gradient(
+    to top,
+    rgba(20,14,10,.85) 0%,
+    rgba(20,14,10,.3) 55%,
+    rgba(20,14,10,.1) 100%
+  );
+}
+
+.hero-body {
+  position: relative; z-index:2;
+  max-width: 800px;
+}
+.hero-eyebrow {
+  font-family: var(--sans);
+  font-size: .75rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--sand);
+  margin-bottom: 1.2rem;
+  opacity:.9;
+}
+.hero h1 {
+  font-family: var(--serif);
+  font-size: clamp(2.8rem, 7vw, 6rem);
+  font-weight: 300;
+  line-height: 1.05;
+  letter-spacing: -.01em;
+  margin-bottom: 1.5rem;
+}
+.hero h1 i { font-style: italic; color: var(--sand); }
+.hero-sub {
+  font-size: clamp(.88rem, 1.5vw, 1.05rem);
+  font-weight: 300;
+  color: rgba(255,255,255,.8);
+  max-width: 520px;
+  line-height: 1.75;
+  margin-bottom: 2.5rem;
+}
+.hero-actions { display:flex; gap:1rem; flex-wrap:wrap; }
+
+.btn {
+  display:inline-block;
+  text-decoration:none;
+  font-family: var(--sans);
+  font-size: .8rem;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  font-weight: 500;
+  padding: .85rem 2rem;
+  transition: all .25s;
+  cursor:pointer; border:none;
+}
+.btn-fill {
+  background: var(--terra);
+  color: #fff;
+}
+.btn-fill:hover { background: #b37c5a; }
+.btn-outline {
+  background: transparent;
+  color: #fff;
+  border: 1px solid rgba(255,255,255,.5);
+}
+.btn-outline:hover { border-color:#fff; background: rgba(255,255,255,.08); }
+
+/* hero badges */
+.hero-badges {
+  position:absolute; right:5vw; bottom: 8vh;
+  z-index:2;
+  display:flex; flex-direction:column; gap:1.2rem;
+  align-items:flex-end;
+}
+.hbadge {
+  display:flex; align-items:center; gap:.7rem;
+  color: rgba(255,255,255,.75);
+  font-size:.72rem; letter-spacing:.1em; text-transform:uppercase;
+}
+.hbadge-icon {
+  width:36px; height:36px;
+  border:1px solid rgba(255,255,255,.25);
+  display:flex; align-items:center; justify-content:center;
+  font-size:1rem;
+}
+
+/* ─── MARQUEE ─── */
+.marquee-strip {
+  background: var(--terra);
+  overflow:hidden; white-space:nowrap;
+  padding: .7rem 0;
+}
+.marquee-inner {
+  display:inline-block;
+  animation: marquee 28s linear infinite;
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  font-style: italic;
+  color: rgba(255,255,255,.9);
+  letter-spacing:.05em;
+}
+@keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+/* ─── SECTION COMMONS ─── */
+section { padding: clamp(4rem,10vw,8rem) 5vw; }
+
+.label {
+  font-size: .72rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--terra);
+  font-weight: 500;
+  margin-bottom: 1rem;
+  display:block;
+}
+.display {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 4.5vw, 3.8rem);
+  font-weight: 300;
+  line-height: 1.1;
+  letter-spacing: -.01em;
+  color: var(--ink);
+}
+.display i { font-style: italic; color: var(--terra); }
+.body-text {
+  font-size: clamp(.9rem,1.3vw,1.05rem);
+  color: #6b5f55;
+  line-height: 1.8;
+  font-weight: 300;
+}
+
+/* reveal */
+.reveal {
+  opacity:0; transform:translateY(30px);
+  transition: opacity .7s ease, transform .7s ease;
+}
+.reveal.in { opacity:1; transform:none; }
+
+/* ─── ABOUT ─── */
+.about { background: var(--mist); }
+.about-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(2rem, 5vw, 6rem);
+  align-items: center;
+}
+.about-img-wrap {
+  position: relative;
+}
+.about-img {
+  width:100%; aspect-ratio:3/4;
+  object-fit:cover;
+  display:block;
+}
+.about-badge {
+  position:absolute; bottom:-1.5rem; right:-1.5rem;
+  background: var(--terra);
+  color:#fff;
+  padding:1.5rem;
+  text-align:center;
+  min-width:120px;
+}
+.about-badge .num {
+  font-family:var(--serif);
+  font-size:2.5rem;
+  font-weight:600;
+  line-height:1;
+  display:block;
+}
+.about-badge .lbl {
+  font-size:.7rem;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  opacity:.85;
+  display:block;
+  margin-top:.3rem;
+}
+.about-text { padding: 1rem 0; }
+.about-text .display { margin-bottom:1.5rem; }
+.about-text .body-text { margin-bottom:2rem; max-width:480px; }
+
+.pillars {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:1.2rem; margin-top:2rem;
+}
+.pillar {
+  border-left:2px solid var(--warm);
+  padding:.8rem 1rem;
+  transition: border-color .2s;
+}
+.pillar:hover { border-color:var(--terra); }
+.pillar h4 {
+  font-family:var(--serif);
+  font-size:1.05rem;
+  font-weight:600;
+  color:var(--ink);
+  margin-bottom:.25rem;
+}
+.pillar p { font-size:.82rem; color:#7a6e64; line-height:1.5; }
+
+/* ─── STATS ─── */
+.stats { background: var(--ink); padding: 4rem 5vw; }
+.stats-row {
+  display:grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap:1px;
+  background: rgba(255,255,255,.06);
+}
+.stat {
+  padding: 3rem 2rem;
+  text-align:center;
+  background: var(--ink);
+  transition: background .25s;
+}
+.stat:hover { background: #231f1a; }
+.stat-n {
+  font-family:var(--serif);
+  font-size:clamp(2.5rem,4vw,3.5rem);
+  font-weight:300;
+  color: var(--sand);
+  line-height:1;
+  margin-bottom:.5rem;
+}
+.stat-l {
+  font-size:.72rem;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,.45);
+}
+
+/* ─── PRODUCTS ─── */
+.products { background: var(--cream); }
+.products-head {
+  display:flex; justify-content:space-between; align-items:flex-end;
+  margin-bottom:3rem; gap:2rem; flex-wrap:wrap;
+}
+.products-head .display { max-width:480px; }
+
+.prod-grid {
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap:1.5rem;
+}
+.prod-card {
+  position:relative; overflow:hidden;
+  aspect-ratio:3/4;
+  cursor:pointer;
+  background:#ccc;
+}
+.prod-card img {
+  width:100%; height:100%;
+  object-fit:cover;
+  transition: transform .7s ease;
+  display:block;
+}
+.prod-card:hover img { transform:scale(1.06); }
+.prod-card-body {
+  position:absolute; inset:0;
+  background: linear-gradient(to top, rgba(20,14,10,.9) 0%, transparent 55%);
+  display:flex; flex-direction:column; justify-content:flex-end;
+  padding:1.8rem 1.5rem;
+  transition: background .3s;
+}
+.prod-card:hover .prod-card-body {
+  background: linear-gradient(to top, rgba(20,14,10,.95) 0%, rgba(20,14,10,.2) 55%);
+}
+.prod-tag {
+  font-size:.68rem; letter-spacing:.15em;
+  text-transform:uppercase; color:var(--sand);
+  margin-bottom:.5rem;
+}
+.prod-card-body h3 {
+  font-family:var(--serif);
+  font-size:1.6rem; font-weight:300;
+  color:#fff; line-height:1.2;
+  margin-bottom:.5rem;
+}
+.prod-card-body p {
+  font-size:.82rem; color:rgba(255,255,255,.7);
+  line-height:1.6;
+  max-height:0; overflow:hidden;
+  transition: max-height .4s, opacity .3s;
+  opacity:0;
+}
+.prod-card:hover .prod-card-body p { max-height:60px; opacity:1; }
+.prod-arrow {
+  display:inline-flex; align-items:center; gap:.4rem;
+  color:var(--sand); font-size:.75rem;
+  letter-spacing:.1em; text-transform:uppercase;
+  text-decoration:none; margin-top:.8rem;
+  opacity:0; transform:translateX(-6px);
+  transition: opacity .3s, transform .3s;
+}
+.prod-card:hover .prod-arrow { opacity:1; transform:none; }
+
+/* ─── SERVICES ─── */
+.services { background: var(--mist); }
+.services-grid {
+  display:grid;
+  grid-template-columns: repeat(3,1fr);
+  gap:1.5px;
+  background: var(--warm);
+  margin-top:3rem;
+}
+.svc {
+  background: var(--mist);
+  padding: 2.5rem 2rem;
+  transition: background .2s;
+}
+.svc:hover { background: var(--warm); }
+.svc-ico { font-size:2rem; margin-bottom:1.2rem; display:block; }
+.svc h3 {
+  font-family:var(--serif);
+  font-size:1.3rem; font-weight:600;
+  color:var(--ink); margin-bottom:.6rem;
+}
+.svc p { font-size:.85rem; color:#7a6e64; line-height:1.65; }
+
+/* ─── TESTIMONIALS ─── */
+.testimonials { background: var(--ink); color:#fff; }
+.testimonials .label { color:var(--sand); }
+.testi-grid {
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:1px; background:rgba(255,255,255,.07);
+  margin-top:3rem;
+}
+.testi {
+  background:var(--ink);
+  padding:2.5rem 2rem;
+  transition:background .2s;
+}
+.testi:hover { background:#231f1a; }
+.stars { color:var(--sand); font-size:.9rem; margin-bottom:1.2rem; }
+.testi-q {
+  font-family:var(--serif);
+  font-size:1.1rem; font-weight:300; font-style:italic;
+  color:rgba(255,255,255,.85); line-height:1.7;
+  margin-bottom:1.5rem;
+}
+.testi-who {
+  display:flex; align-items:center; gap:.9rem;
+}
+.testi-av {
+  width:42px; height:42px; border-radius:50%;
+  background:var(--terra);
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--serif); font-size:1rem;
+  font-weight:600; color:#fff; flex-shrink:0;
+}
+.testi-who h4 { font-size:.9rem; color:#fff; font-weight:500; }
+.testi-who p { font-size:.75rem; color:rgba(255,255,255,.45); }
+
+/* ─── GALLERY ─── */
+.gallery { background: var(--cream); }
+.gal-grid {
+  display:grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap:1rem;
+  margin-top:3rem;
+}
+.gal-item {
+  position:relative; overflow:hidden;
+  background:#c4b8ae;
+  cursor:pointer;
+}
+.gal-item img {
+  width:100%; height:100%;
+  object-fit:cover; display:block;
+  transition: transform .6s ease;
+  min-height:200px;
+}
+.gal-item:hover img { transform:scale(1.07); }
+.gal-item:nth-child(1) { grid-row:1/3; aspect-ratio:unset; min-height:400px; }
+.gal-item:nth-child(2), .gal-item:nth-child(3),
+.gal-item:nth-child(4), .gal-item:nth-child(5) { aspect-ratio:4/3; }
+.gal-cap {
+  position:absolute; bottom:0; left:0; right:0;
+  background:linear-gradient(to top,rgba(20,14,10,.85),transparent);
+  padding:1.2rem;
+  transform:translateY(6px); opacity:0;
+  transition:.3s;
+}
+.gal-item:hover .gal-cap { opacity:1; transform:none; }
+.gal-cap h4 {
+  font-family:var(--serif);
+  font-size:1rem; color:var(--sand); margin-bottom:.2rem;
+}
+.gal-cap p { font-size:.75rem; color:rgba(255,255,255,.75); }
+
+/* ─── CONTACT ─── */
+.contact { background: var(--stone); color:#fff; }
+.contact .label { color:var(--sand); }
+.contact .display { color:#fff; margin-bottom:3rem; }
+.contact-layout {
+  display:grid; grid-template-columns:1fr 1.4fr;
+  gap:clamp(2rem,5vw,5rem); align-items:start;
+}
+.contact-info { display:flex; flex-direction:column; gap:1.5rem; }
+.cinfo {
+  display:flex; gap:1rem; align-items:flex-start;
+  padding:1.5rem;
+  border:1px solid rgba(255,255,255,.08);
+  transition:border-color .2s;
+}
+.cinfo:hover { border-color:var(--sand); }
+.cinfo-ico { font-size:1.4rem; flex-shrink:0; margin-top:.1rem; }
+.cinfo h4 {
+  font-family:var(--serif);
+  font-size:1rem; color:var(--sand); margin-bottom:.3rem;
+}
+.cinfo p, .cinfo a {
+  font-size:.85rem;
+  color:rgba(255,255,255,.6);
+  line-height:1.6; text-decoration:none;
+}
+.cinfo a:hover { color:var(--sand); }
+
+.contact-form {
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  padding:2.5rem;
+  display:flex; flex-direction:column; gap:1.2rem;
+}
+.fg { display:flex; flex-direction:column; gap:.5rem; }
+.fg label {
+  font-size:.72rem; letter-spacing:.1em;
+  text-transform:uppercase; color:rgba(255,255,255,.5);
+}
+.fg input, .fg select, .fg textarea {
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.12);
+  color:#fff;
+  padding:.8rem 1rem;
+  font-family:var(--sans); font-size:.9rem;
+  transition:border-color .2s;
+  -webkit-appearance:none;
+}
+.fg input:focus, .fg select:focus, .fg textarea:focus {
+  outline:none;
+  border-color:var(--sand);
+  background:rgba(255,255,255,.09);
+}
+.fg select option { background:var(--ink); color:#fff; }
+.fg textarea { min-height:130px; resize:vertical; }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:1.2rem; }
+.btn-submit {
+  background:var(--terra);
+  color:#fff;
+  border:none;
+  padding:1rem 2rem;
+  font-family:var(--sans);
+  font-size:.8rem; letter-spacing:.13em;
+  text-transform:uppercase; font-weight:500;
+  cursor:pointer;
+  transition:background .2s;
+  width:100%;
+  margin-top:.5rem;
+}
+.btn-submit:hover { background:#b37c5a; }
+
+/* ─── FOOTER ─── */
+footer {
+  background:var(--ink);
+  padding:4rem 5vw 2rem;
+}
+.foot-top {
+  display:grid;
+  grid-template-columns:2fr 1fr 1fr 1fr;
+  gap:3rem;
+  margin-bottom:3rem;
+  padding-bottom:3rem;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.foot-brand h3 {
+  font-family:var(--serif);
+  font-size:1.6rem; font-weight:600;
+  color:var(--sand); margin-bottom:1rem;
+}
+.foot-brand p { font-size:.85rem; color:rgba(255,255,255,.45); line-height:1.7; }
+.foot-col h4 {
+  font-size:.72rem; letter-spacing:.15em;
+  text-transform:uppercase; color:rgba(255,255,255,.3);
+  margin-bottom:1.2rem;
+}
+.foot-col ul { list-style:none; display:flex; flex-direction:column; gap:.7rem; }
+.foot-col a {
+  font-size:.88rem; color:rgba(255,255,255,.55);
+  text-decoration:none; transition:color .2s;
+}
+.foot-col a:hover { color:var(--sand); }
+.foot-bottom {
+  text-align:center;
+  font-size:.75rem;
+  color:rgba(255,255,255,.25);
+  letter-spacing:.05em;
+}
+
+/* ════════════════════════════════════
+   RESPONSIVE
+════════════════════════════════════ */
+
+/* Tablet: 768–1024 */
+@media (max-width:1024px) {
+  .prod-grid { grid-template-columns:1fr 1fr; }
+  .prod-card:nth-child(3) { grid-column:1/-1; aspect-ratio:16/7; }
+
+  .gal-grid {
+    grid-template-columns:1fr 1fr;
+    grid-template-rows:auto;
+  }
+  .gal-item:nth-child(1) { grid-column:1/-1; grid-row:auto; aspect-ratio:16/7; min-height:unset; }
+
+  .foot-top { grid-template-columns:1fr 1fr; gap:2rem; }
+  .foot-brand { grid-column:1/-1; }
+
+  .stats-row { grid-template-columns:1fr 1fr; gap:1px; }
+}
+
+/* Mobile: ≤768 */
+@media (max-width:768px) {
+  :root { --nav-h:60px; }
+
+  /* Nav */
+  .nav-links { display:none; }
+  .burger { display:flex; }
+  .mobile-menu { display:flex; }
+  .nav-cta { display:none; }
+
+  /* Hero */
+  .hero { padding:0 5vw 6vh; align-items:flex-end; }
+  .hero h1 { font-size:clamp(2.2rem,8vw,3.2rem); }
+  .hero-sub { font-size:.88rem; }
+  .hero-badges { display:none; }
+  .hero-actions { flex-direction:column; width:100%; }
+  .hero-actions .btn { text-align:center; width:100%; }
+
+  /* About */
+  .about-layout { grid-template-columns:1fr; }
+  .about-img-wrap { order:0; }
+  .about-img { aspect-ratio:4/3; }
+  .about-badge { bottom:-1rem; right:1rem; }
+  .about-text { order:1; padding:1rem 0 0; }
+  .pillars { grid-template-columns:1fr; }
+
+  /* Stats */
+  .stats-row { grid-template-columns:1fr 1fr; }
+  .stat { padding:2rem 1rem; }
+
+  /* Products */
+  .products-head { flex-direction:column; align-items:flex-start; }
+  .prod-grid { grid-template-columns:1fr; }
+  .prod-card { aspect-ratio:4/3; }
+  .prod-card:nth-child(3) { grid-column:auto; aspect-ratio:4/3; }
+  /* Always show description on mobile (no hover) */
+  .prod-card-body p { max-height:80px; opacity:1; }
+  .prod-arrow { opacity:1; transform:none; }
+
+  /* Services */
+  .services-grid { grid-template-columns:1fr; }
+  .svc { padding:2rem 1.5rem; }
+
+  /* Testimonials */
+  .testi-grid { grid-template-columns:1fr; background:transparent; }
+  .testi { border:1px solid rgba(255,255,255,.07); margin-bottom:1px; }
+
+  /* Gallery */
+  .gal-grid {
+    grid-template-columns:1fr;
+    grid-template-rows:auto;
+  }
+  .gal-item:nth-child(1) { grid-column:auto; grid-row:auto; aspect-ratio:4/3; min-height:unset; }
+  .gal-item { aspect-ratio:4/3 !important; }
+  /* Show captions always on mobile */
+  .gal-cap { opacity:1; transform:none; }
+
+  /* Contact */
+  .contact-layout { grid-template-columns:1fr; }
+  .contact-form { padding:1.5rem; }
+  .form-row { grid-template-columns:1fr; }
+
+  /* Footer */
+  .foot-top { grid-template-columns:1fr; gap:2rem; }
+  .foot-brand { grid-column:auto; }
+}
+
+/* Small mobile: ≤400px */
+@media (max-width:400px) {
+  :root { font-size:15px; }
+  .hero h1 { font-size:2rem; }
+  .stat-n { font-size:2rem; }
+  .contact-form { padding:1.2rem; }
+  nav { padding:0 4vw; }
+  section { padding:3rem 4vw; }
+}
+</style>
+</head>
+<body>
+
+<div id="prog"></div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a class="nav-logo" href="#">Prestige <em>Stone</em></a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#products">Stones</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#contact" class="nav-cta btn">Free Quote</a></li>
+  </ul>
+  <button class="burger" id="burger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#about"     onclick="closeMenu()">About</a>
+  <a href="#products"  onclick="closeMenu()">Stones</a>
+  <a href="#services"  onclick="closeMenu()">Services</a>
+  <a href="#gallery"   onclick="closeMenu()">Gallery</a>
+  <a href="#contact"   onclick="closeMenu()" class="mob-cta">Free Quote</a>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-slides">
+    <div class="hero-slide active" style="background-image:url('https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1800&q=85')"></div>
+    <div class="hero-slide"        style="background-image:url('https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=1800&q=85')"></div>
+    <div class="hero-slide"        style="background-image:url('https://images.unsplash.com/photo-1615529182904-14819c35db37?w=1800&q=85')"></div>
+    <div class="hero-slide"        style="background-image:url('https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=1800&q=85')"></div>
+  </div>
+  <div class="hero-body">
+    <p class="hero-eyebrow">Master Stone Fabricators · Est. 1995</p>
+    <h1>Stone that<br><i>outlasts</i> trends</h1>
+    <p class="hero-sub">We source, fabricate, and install premium natural stone countertops — each slab hand-selected, each edge cut by craftsmen who take their work personally.</p>
+    <div class="hero-actions">
+      <a href="#products" class="btn btn-fill">View Our Stones</a>
+      <a href="#contact"  class="btn btn-outline">Schedule a Visit</a>
+    </div>
+  </div>
+  <div class="hero-badges">
+    <div class="hbadge"><div class="hbadge-icon">🏆</div>Award Winning</div>
+    <div class="hbadge"><div class="hbadge-icon">✦</div>30+ Years</div>
+    <div class="hbadge"><div class="hbadge-icon">⬡</div>5,000+ Projects</div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-strip">
+  <div class="marquee-inner">
+    &nbsp;&nbsp;Granite &nbsp;·&nbsp; Marble &nbsp;·&nbsp; Quartzite &nbsp;·&nbsp; Soapstone &nbsp;·&nbsp; Travertine &nbsp;·&nbsp; Onyx &nbsp;·&nbsp; Limestone &nbsp;·&nbsp; Dolomite &nbsp;·&nbsp; Granite &nbsp;·&nbsp; Marble &nbsp;·&nbsp; Quartzite &nbsp;·&nbsp; Soapstone &nbsp;·&nbsp; Travertine &nbsp;·&nbsp; Onyx &nbsp;·&nbsp; Limestone &nbsp;·&nbsp; Dolomite &nbsp;&nbsp;
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="about-layout">
+    <div class="about-img-wrap reveal">
+      <img class="about-img"
+           src="https://images.unsplash.com/photo-1565183928294-7d22f5a8b5f7?w=900&q=85"
+           alt="Stone fabrication workshop" loading="lazy">
+      <div class="about-badge">
+        <span class="num">30+</span>
+        <span class="lbl">Years</span>
+      </div>
+    </div>
+    <div class="about-text reveal">
+      <span class="label">Our Story</span>
+      <h2 class="display">Craftsmanship<br>without <i>compromise</i></h2>
+      <p class="body-text">
+        Founded in 1995, we've spent three decades doing one thing: turning raw stone from the world's finest quarries into countertops, vanities, and surfaces that become the heart of a room. No shortcuts, no filler materials, no batch production.
+      </p>
+      <p class="body-text" style="margin-top:1rem;">
+        Every slab we install is measured, templated, and cut in-house by the same team that shows up on installation day — people who sign their work with their reputation.
+      </p>
+      <div class="pillars">
+        <div class="pillar">
+          <h4>Hand-Selected Slabs</h4>
+          <p>Direct quarry relationships in Italy, Brazil & India</p>
+        </div>
+        <div class="pillar">
+          <h4>CNC + Hand Finishing</h4>
+          <p>Technology guided by skilled human eyes</p>
+        </div>
+        <div class="pillar">
+          <h4>Lifetime Warranty</h4>
+          <p>We stand behind every edge, seam, and surface</p>
+        </div>
+        <div class="pillar">
+          <h4>In-House Crew</h4>
+          <p>No subcontractors — ever</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stats-row">
+    <div class="stat reveal"><div class="stat-n">30+</div><div class="stat-l">Years in Business</div></div>
+    <div class="stat reveal"><div class="stat-n">5,000+</div><div class="stat-l">Projects Completed</div></div>
+    <div class="stat reveal"><div class="stat-n">100%</div><div class="stat-l">Satisfaction Guarantee</div></div>
+    <div class="stat reveal"><div class="stat-n">25</div><div class="stat-l">Master Craftsmen</div></div>
+  </div>
+</div>
+
+<!-- PRODUCTS -->
+<section class="products" id="products">
+  <div class="products-head">
+    <div class="reveal">
+      <span class="label">Our Collection</span>
+      <h2 class="display">Natural stones,<br><i>honestly presented</i></h2>
+    </div>
+    <a href="#contact" class="btn btn-fill reveal">Request Samples</a>
+  </div>
+  <div class="prod-grid">
+    <div class="prod-card reveal">
+      <img src="https://images.unsplash.com/photo-1615529182904-14819c35db37?w=700&q=80" alt="Granite" loading="lazy">
+      <div class="prod-card-body">
+        <p class="prod-tag">Most Popular</p>
+        <h3>Granite</h3>
+        <p>Igneous rock formed over millions of years — the hardest and most heat-resistant countertop surface available.</p>
+        <a href="#contact" class="prod-arrow">Explore →</a>
+      </div>
+    </div>
+    <div class="prod-card reveal">
+      <img src="https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=700&q=80" alt="Marble" loading="lazy">
+      <div class="prod-card-body">
+        <p class="prod-tag">Timeless Classic</p>
+        <h3>Marble</h3>
+        <p>Calacatta, Carrara, Statuario — we source directly from Italian quarries for unmatched veining quality.</p>
+        <a href="#contact" class="prod-arrow">Explore →</a>
+      </div>
+    </div>
+    <div class="prod-card reveal">
+      <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=700&q=80" alt="Quartzite" loading="lazy">
+      <div class="prod-card-body">
+        <p class="prod-tag">Best of Both</p>
+        <h3>Quartzite</h3>
+        <p>Marble's looks, granite's toughness. Super White, Taj Mahal, and Fusion — genuinely striking stones.</p>
+        <a href="#contact" class="prod-arrow">Explore →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials" id="testimonials">
+  <span class="label">Client Voices</span>
+  <h2 class="display" style="color:#fff;margin-bottom:0">What people say<br>about <i>working with us</i></h2>
+  <div class="testi-grid">
+    <div class="testi reveal">
+      <div class="stars">★★★★★</div>
+      <p class="testi-q">"They helped us choose between three slabs over two visits, never rushed us. The Calacatta marble in our kitchen still stops guests mid-sentence."</p>
+      <div class="testi-who">
+        <div class="testi-av">SJ</div>
+        <div><h4>Sarah Johnson</h4><p>Homeowner, Beverly Hills</p></div>
+      </div>
+    </div>
+    <div class="testi reveal">
+      <div class="stars">★★★★★</div>
+      <p class="testi-q">"Twenty years in interior design and I've seen every fabricator in the city. Prestige is the only one I trust with a client who genuinely knows stone."</p>
+      <div class="testi-who">
+        <div class="testi-av">MC</div>
+        <div><h4>Michael Chen</h4><p>Interior Designer, Los Angeles</p></div>
+      </div>
+    </div>
+    <div class="testi reveal">
+      <div class="stars">★★★★★</div>
+      <p class="testi-q">"Template to install in four days. The waterfall edge on our island is flawless — I genuinely cannot find the seam and I've been looking."</p>
+      <div class="testi-who">
+        <div class="testi-av">RB</div>
+        <div><h4>Robert Brown</h4><p>Homeowner, Malibu</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+  <div class="reveal">
+    <span class="label">What We Do</span>
+    <h2 class="display">Complete stone<br>service, <i>start to finish</i></h2>
+  </div>
+  <div class="services-grid">
+    <div class="svc reveal"><span class="svc-ico">🎨</span><h3>Design Consultation</h3><p>We walk you through slab selection in our showroom — no pressure, no upsell, just honest guidance on what works for your space.</p></div>
+    <div class="svc reveal"><span class="svc-ico">📐</span><h3>Digital Templating</h3><p>Laser-accurate measuring means every cut accounts for your kitchen's quirks before we touch the stone.</p></div>
+    <div class="svc reveal"><span class="svc-ico">✂️</span><h3>Custom Fabrication</h3><p>CNC-cut and hand-finished in our facility. Straight edges, mitered edges, ogee, waterfall — all done in-house.</p></div>
+    <div class="svc reveal"><span class="svc-ico">🛠️</span><h3>Expert Installation</h3><p>Our own certified crew handles every install. We don't hand off to subcontractors on the finish line.</p></div>
+    <div class="svc reveal"><span class="svc-ico">🏢</span><h3>Commercial Projects</h3><p>Hotels, restaurants, retail spaces. We have the capacity and project management for large-scale work.</p></div>
+    <div class="svc reveal"><span class="svc-ico">✦</span><h3>Sealing & Restoration</h3><p>Annual sealing, chip repair, and full restoration. We look after the stone long after installation day.</p></div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="gallery" id="gallery">
+  <div class="reveal">
+    <span class="label">Recent Work</span>
+    <h2 class="display">Projects we're <i>proud of</i></h2>
+  </div>
+  <div class="gal-grid">
+    <div class="gal-item reveal">
+      <img src="https://images.unsplash.com/photo-1556911220-bff31c812dba?w=700&q=80" alt="Kitchen island" loading="lazy">
+      <div class="gal-cap"><h4>Kitchen Island</h4><p>Black Galaxy Granite · Waterfall Edge</p></div>
+    </div>
+    <div class="gal-item reveal">
+      <img src="https://images.unsplash.com/photo-1600210491892-03d54c0aaf87?w=600&q=80" alt="Master bath" loading="lazy">
+      <div class="gal-cap"><h4>Master Bath</h4><p>Calacatta Gold Marble</p></div>
+    </div>
+    <div class="gal-item reveal">
+      <img src="https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?w=600&q=80" alt="Chef kitchen" loading="lazy">
+      <div class="gal-cap"><h4>Chef's Kitchen</h4><p>White Fantasy Quartzite</p></div>
+    </div>
+    <div class="gal-item reveal">
+      <img src="https://images.unsplash.com/photo-1600607687644-c7171b42498b?w=600&q=80" alt="Bar top" loading="lazy">
+      <div class="gal-cap"><h4>Restaurant Bar</h4><p>Absolute Black Granite</p></div>
+    </div>
+    <div class="gal-item reveal">
+      <img src="https://images.unsplash.com/photo-1600210491369-e753d80a41f3?w=600&q=80" alt="Vanity" loading="lazy">
+      <div class="gal-cap"><h4>Double Vanity</h4><p>Statuario Marble</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <span class="label">Get In Touch</span>
+  <h2 class="display">Start your project.<br><i>We'll handle the rest.</i></h2>
+  <div class="contact-layout">
+    <div class="contact-info reveal">
+      <div class="cinfo">
+        <span class="cinfo-ico">📍</span>
+        <div><h4>Showroom</h4><p>1234 Stone Avenue<br>Your City, ST 12345</p></div>
+      </div>
+      <div class="cinfo">
+        <span class="cinfo-ico">📞</span>
+        <div><h4>Phone</h4>
+          <p><a href="tel:5551234567">(555) 123-4567</a><br>
+          <a href="tel:8001234567">(800) 123-4567</a></p>
+        </div>
+      </div>
+      <div class="cinfo">
+        <span class="cinfo-ico">✉️</span>
+        <div><h4>Email</h4><p><a href="/cdn-cgi/l/email-protection#7811161e1738080a1d0b0c111f1d0b0c17161d561b1715"><span class="__cf_email__" data-cfemail="4d24232b220d3d3f283e39242a283e39222328632e2220">[email&#160;protected]</span></a></p></div>
+      </div>
+      <div class="cinfo">
+        <span class="cinfo-ico">🕐</span>
+        <div><h4>Hours</h4><p>Mon–Fri: 8am–6pm<br>Saturday: 9am–4pm</p></div>
+      </div>
+    </div>
+    <form class="contact-form reveal" action="YOUR-FORMSPREE-URL" method="POST">
+      <input type="hidden" name="_subject" value="Quote Request – Prestige Stone">
+      <div class="form-row">
+        <div class="fg"><label>Full Name *</label><input type="text" name="name" required></div>
+        <div class="fg"><label>Phone *</label><input type="tel" name="phone" required></div>
+      </div>
+      <div class="fg"><label>Email *</label><input type="email" name="email" required></div>
+      <div class="fg">
+        <label>Project Type *</label>
+        <select name="project" required>
+          <option value="">Select a project type…</option>
+          <option>Kitchen Countertops</option>
+          <option>Bathroom Vanity</option>
+          <option>Fireplace Surround</option>
+          <option>Bar Top</option>
+          <option>Commercial Project</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="fg"><label>Tell us about your project</label><textarea name="message"></textarea></div>
+      <button type="submit" class="btn-submit">Request Free Consultation</button>
+    </form>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-top">
+    <div class="foot-brand">
+      <h3>Prestige Stone</h3>
+      <p>Premium natural stone fabrication and installation since 1995.<br>Licensed, insured, and proud of every project we sign our name to.</p>
+    </div>
+    <div class="foot-col">
+      <h4>Navigate</h4>
+      <ul>
+        <li><a href="#about">About</a></li>
+        <li><a href="#products">Our Stones</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+      </ul>
+    </div>
+    <div class="foot-col">
+      <h4>Stone Types</h4>
+      <ul>
+        <li><a href="#products">Granite</a></li>
+        <li><a href="#products">Marble</a></li>
+        <li><a href="#products">Quartzite</a></li>
+        <li><a href="#gallery">See All Projects</a></li>
+      </ul>
+    </div>
+    <div class="foot-col">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="#contact">Get a Quote</a></li>
+        <li><a href="tel:5551234567">(555) 123-4567</a></li>
+        <li><a href="/cdn-cgi/l/email-protection#026b6c646d4272706771766b656771766d6c672c616d6f"><span class="__cf_email__" data-cfemail="6f060109002f1f1d0a1c1b06080a1c1b00010a410c0002">[email&#160;protected]</span></a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    &copy; 2025 Prestige Stone &amp; Granite · All rights reserved
+  </div>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// ─── SCROLL PROGRESS
+const prog = document.getElementById('prog');
+window.addEventListener('scroll', () => {
+  const s = document.documentElement.scrollTop;
+  const h = document.documentElement.scrollHeight - window.innerHeight;
+  prog.style.width = (s / h * 100) + '%';
+});
+
+// ─── NAV SOLID ON SCROLL
+const nav = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('solid', window.scrollY > 60);
+});
+
+// ─── MOBILE MENU
+const burger = document.getElementById('burger');
+const mMenu  = document.getElementById('mobileMenu');
+burger.addEventListener('click', () => {
+  burger.classList.toggle('open');
+  mMenu.classList.toggle('open');
+  document.body.style.overflow = mMenu.classList.contains('open') ? 'hidden' : '';
+});
+function closeMenu() {
+  burger.classList.remove('open');
+  mMenu.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ─── HERO SLIDER
+const slides = document.querySelectorAll('.hero-slide');
+let cur = 0;
+setInterval(() => {
+  slides[cur].classList.remove('active');
+  cur = (cur + 1) % slides.length;
+  slides[cur].classList.add('active');
+}, 5000);
+
+// ─── REVEAL ON SCROLL
+const revealEls = document.querySelectorAll('.reveal');
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+revealEls.forEach(el => io.observe(el));
+
+// ─── SMOOTH SCROLL
+document.querySelector
